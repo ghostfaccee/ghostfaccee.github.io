@@ -60,6 +60,10 @@
         .terminal-title {
             color: #ffffff;
             font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
         }
         .terminal-title .user {
             color: #4caf50;
@@ -134,6 +138,22 @@
             50% { opacity: 0; }
         }
         @media (max-width: 768px) {
+            .terminal-header {
+                padding: 8px 12px;
+                min-height: 38px;
+            }
+            .terminal-title {
+                font-size: 0.75rem;
+                max-width: 65%;
+            }
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+            .terminal-dots {
+                gap: 6px;
+                right: 12px;
+            }
             .terminal-body {
                 padding: 14px 16px 12px 16px;
                 font-size: 14px;
@@ -141,6 +161,22 @@
             }
         }
         @media (max-width: 480px) {
+            .terminal-header {
+                padding: 6px 10px;
+                min-height: 34px;
+            }
+            .terminal-title {
+                font-size: 0.65rem;
+                max-width: 60%;
+            }
+            .dot {
+                width: 8px;
+                height: 8px;
+            }
+            .terminal-dots {
+                gap: 5px;
+                right: 10px;
+            }
             .terminal-body {
                 padding: 10px 12px 8px 12px;
                 font-size: 13px;
@@ -192,6 +228,14 @@
             }
             .neofetch-info {
                 font-size: 12px;
+            }
+        }
+        @media (max-width: 480px) {
+            .neofetch-ascii {
+                font-size: 9px;
+            }
+            .neofetch-info {
+                font-size: 11px;
             }
         }
         @supports (-webkit-touch-callout: none) {
