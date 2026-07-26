@@ -73,6 +73,7 @@
             flex-direction: column;
             font-size: 15px;
             line-height: 1.7;
+            padding-bottom: 30px;
         }
         .line {
             margin-bottom: 2px;
@@ -132,6 +133,20 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+        @media (max-width: 768px) {
+            .terminal-body {
+                padding: 14px 16px 12px 16px;
+                font-size: 14px;
+                padding-bottom: 40px;
+            }
+        }
+        @media (max-width: 480px) {
+            .terminal-body {
+                padding: 10px 12px 8px 12px;
+                font-size: 13px;
+                padding-bottom: 50px;
+            }
+        }
         ::-webkit-scrollbar {
             width: 4px;
             background: #300a24;
@@ -168,94 +183,20 @@
             padding: 4px 0;
         }
         @media (max-width: 768px) {
-            .terminal-header {
-                padding: 6px 10px;
-                min-height: 32px;
-            }
-            .terminal-title {
-                font-size: 0.65rem;
-            }
-            .dot {
-                width: 8px;
-                height: 8px;
-            }
-            .terminal-dots {
-                gap: 4px;
-                right: 10px;
-            }
-            .terminal-body {
-                padding: 8px 10px 6px 10px;
-                font-size: 11px;
-                line-height: 1.4;
-            }
-            .line {
-                line-height: 1.4;
-                margin-bottom: 1px;
-            }
-            .output {
-                padding-left: 8px;
-                line-height: 1.4;
-            }
-            .cursor-blink {
-                width: 7px;
-                height: 14px;
-            }
             .neofetch-container {
                 flex-direction: column;
-                gap: 4px;
+                gap: 8px;
             }
             .neofetch-ascii {
-                font-size: 8px;
-                line-height: 1.2;
+                font-size: 11px;
             }
             .neofetch-info {
-                font-size: 9px;
-                line-height: 1.2;
+                font-size: 12px;
             }
         }
-        @media (max-width: 480px) {
-            .terminal-header {
-                padding: 4px 8px;
-                min-height: 26px;
-            }
-            .terminal-title {
-                font-size: 0.55rem;
-            }
-            .dot {
-                width: 6px;
-                height: 6px;
-            }
-            .terminal-dots {
-                gap: 3px;
-                right: 8px;
-            }
+        @supports (-webkit-touch-callout: none) {
             .terminal-body {
-                padding: 5px 8px 4px 8px;
-                font-size: 9px;
-                line-height: 1.3;
-            }
-            .line {
-                line-height: 1.3;
-                margin-bottom: 0.5px;
-            }
-            .output {
-                padding-left: 6px;
-                line-height: 1.3;
-            }
-            .cursor-blink {
-                width: 5px;
-                height: 11px;
-            }
-            .neofetch-ascii {
-                font-size: 6px;
-                line-height: 1.1;
-            }
-            .neofetch-info {
-                font-size: 7px;
-                line-height: 1.1;
-            }
-            .neofetch-container {
-                gap: 2px;
+                padding-bottom: 60px !important;
             }
         }
     </style>
@@ -354,7 +295,9 @@
                 <span class="cursor-blink" id="finalCursor"></span>
             `;
             terminalBody.appendChild(line);
-            terminalBody.scrollTop = terminalBody.scrollHeight;
+            setTimeout(() => {
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }, 50);
         }
 
         function typeCommand(line, command, callback) {
@@ -393,8 +336,18 @@
             });
         }
 
+        function scrollToBottom() {
+            setTimeout(() => {
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }, 100);
+        }
+
+        window.addEventListener('resize', scrollToBottom);
+        window.addEventListener('load', scrollToBottom);
+
         setTimeout(processNextCommand, 300);
     </script>
 </body>
 </html>
+
 
