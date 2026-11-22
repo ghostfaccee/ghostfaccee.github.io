@@ -1,765 +1,237 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>ghostfaccee</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #f5f5f7;
-            --bg-card: #ffffff;
-            --bg-input: #e8e8ed;
-            --text-primary: #1a1a1e;
-            --text-secondary: #4a4a52;
-            --text-muted: #8e8e98;
-            --border: #d2d2d7;
-            --border-hover: #a0a0aa;
-            --accent: #5a5a66;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.07);
-            --radius: 14px;
-            --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --status-green: #34c759;
-            --max-width: 1120px;
-        }
-
-        [data-theme="dark"] {
-            --bg: #0a0a0c;
-            --bg-card: #1c1c1e;
-            --bg-input: #2c2c2e;
-            --text-primary: #f2f2f5;
-            --text-secondary: #b0b0b8;
-            --text-muted: #6a6a73;
-            --border: #3a3a3c;
-            --border-hover: #5a5a62;
-            --accent: #8e8e98;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-            --status-green: #30d158;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text-primary);
-            line-height: 1.65;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            transition: background 0.4s ease, color 0.4s ease;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 0 20px;
-        }
-
-        .container {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            width: 100%;
-            padding: 0 24px;
-        }
-
-        @media (max-width: 768px) {
-            body { padding: 0 12px; }
-            .container { padding: 0 12px; }
-        }
-
-        .navbar {
-            padding: 20px 0 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            transition: background 0.4s ease, border-color 0.4s ease;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            font-weight: 700;
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            letter-spacing: -0.03em;
-            color: var(--text-primary);
-            flex-shrink: 0;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: clamp(16px, 3vw, 32px);
-            font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: inherit;
-            transition: color var(--transition);
-            white-space: nowrap;
-        }
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-shrink: 0;
-        }
-
-        .theme-toggle {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            width: 52px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6px;
-            cursor: pointer;
-            transition: background 0.3s ease, border-color 0.3s ease;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .theme-toggle .thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--text-primary);
-            transition: transform 0.35s ease, background 0.3s ease;
-            position: absolute;
-            left: 4px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-        }
-        [data-theme="dark"] .theme-toggle .thumb {
-            transform: translateX(22px);
-            background: #fff;
-        }
-        .theme-toggle svg {
-            width: 14px;
-            height: 14px;
-            fill: var(--text-secondary);
-            z-index: 1;
-            pointer-events: none;
-            transition: fill 0.3s ease;
-        }
-        [data-theme="dark"] .theme-toggle svg.sun {
-            fill: #f5c542;
-        }
-        [data-theme="light"] .theme-toggle svg.moon {
-            fill: #6e6e73;
-        }
-
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: clamp(40px, 8vh, 80px) 0 clamp(32px, 5vh, 48px);
-            width: 100%;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 4px 16px;
-            border-radius: 100px;
-            font-size: clamp(0.6rem, 0.8vw, 0.75rem);
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: clamp(20px, 3vh, 32px);
-        }
-
-        h1 {
-            font-size: clamp(2.4rem, 8vw, 4.8rem);
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1.05;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #8e8e98 0%, #1a1a1e 50%, #6e6e77 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        [data-theme="dark"] h1 {
-            background: linear-gradient(135deg, #b0b0b8 0%, #f2f2f5 50%, #9a9aa3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-desc {
-            font-size: clamp(0.95rem, 1.2vw, 1.15rem);
-            font-weight: 400;
-            color: var(--text-secondary);
-            max-width: 580px;
-            margin-bottom: 12px;
-            line-height: 1.75;
-        }
-
-        .hero-location {
-            display: flex;
-            align-items: center;
-            gap: clamp(16px, 3vw, 32px);
-            flex-wrap: wrap;
-            margin: 16px 0 24px;
-            font-size: clamp(0.85rem, 1vw, 0.95rem);
-            color: var(--text-secondary);
-        }
-        .hero-location .status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--status-green);
-            font-weight: 500;
-        }
-        .hero-location .status .dot {
-            display: inline-block;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--status-green);
-            animation: pulse-dot 2.2s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.7); }
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: clamp(24px, 5vw, 56px);
-            margin-top: 4px;
-            flex-wrap: wrap;
-        }
-        .hero-stats-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .hero-stats-item .number {
-            font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--text-primary);
-        }
-        .hero-stats-item .label {
-            font-size: clamp(0.7rem, 0.8vw, 0.85rem);
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .tech-strip {
-            width: 100%;
-            overflow: hidden;
-            padding: 16px 0 12px;
-            margin-top: 4px;
-            position: relative;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tech-strip-track {
-            display: flex;
-            gap: clamp(20px, 4vw, 44px);
-            animation: scrollTech 40s linear infinite;
-            width: max-content;
-            padding: 4px 0;
-        }
-
-        .tech-strip-track:hover {
-            animation-play-state: paused;
-        }
-
-        .tech-item {
-            flex-shrink: 0;
-            font-weight: 500;
-            font-size: clamp(0.8rem, 1vw, 0.95rem);
-            color: var(--text-secondary);
-            white-space: nowrap;
-            transition: color var(--transition);
-            letter-spacing: 0.01em;
-        }
-        .tech-item:hover {
-            color: var(--text-primary);
-        }
-
-        @keyframes scrollTech {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .section {
-            padding: clamp(40px, 7vh, 72px) 0 clamp(32px, 5vh, 48px);
-            width: 100%;
-        }
-
-        .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            margin-bottom: 6px;
-            line-height: 1.15;
-        }
-
-        .section-desc {
-            font-size: clamp(0.95rem, 1.1vw, 1.1rem);
-            color: var(--text-secondary);
-            margin-bottom: clamp(28px, 4vh, 44px);
-            max-width: 580px;
-            line-height: 1.7;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-            gap: clamp(16px, 2vw, 24px);
-            width: 100%;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: clamp(22px, 2.5vw, 32px) clamp(18px, 2vw, 28px) clamp(26px, 2.5vw, 34px);
-            transition: all var(--transition);
-            box-shadow: var(--shadow-sm);
-        }
-        .card:hover {
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-3px);
-        }
-
-        .card h3 {
-            font-size: clamp(1rem, 1.1vw, 1.15rem);
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .card p {
-            font-size: clamp(0.85rem, 0.9vw, 0.95rem);
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-            gap: clamp(18px, 2.5vw, 28px);
-            width: 100%;
-        }
-
-        .project-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: clamp(24px, 2.5vw, 36px) clamp(20px, 2vw, 32px) clamp(28px, 2.5vw, 36px);
-            transition: all var(--transition);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            flex-direction: column;
-        }
-        .project-card:hover {
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
-        }
-
-        .project-card .project-name {
-            font-size: clamp(1.15rem, 1.5vw, 1.4rem);
-            font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: -0.02em;
-        }
-
-        .project-card .project-desc {
-            font-size: clamp(0.88rem, 0.95vw, 0.95rem);
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            line-height: 1.7;
-            flex: 1;
-        }
-
-        .project-card .project-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 8px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-
-        .project-card .project-links {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .project-card .project-links a {
-            font-size: clamp(0.75rem, 0.8vw, 0.8rem);
-            font-weight: 500;
-            color: var(--text-primary);
-            text-decoration: none;
-            padding: 5px 16px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--bg-card);
-            transition: all var(--transition);
-            box-shadow: var(--shadow-sm);
-        }
-        .project-card .project-links a:hover {
-            border-color: var(--border-hover);
-            background: var(--bg-input);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-
-        .footer {
-            border-top: 1px solid var(--border);
-            padding: 24px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: clamp(0.8rem, 0.85vw, 0.9rem);
-            color: var(--text-muted);
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: auto;
-            width: 100%;
-        }
-        .footer-socials {
-            display: flex;
-            gap: clamp(16px, 2.5vw, 28px);
-        }
-        .footer-socials a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color var(--transition);
-            font-weight: 500;
-        }
-        .footer-socials a:hover {
-            color: var(--text-primary);
-        }
-
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @media (max-width: 700px) {
-            .navbar {
-                flex-wrap: nowrap;
-                padding: 14px 0 12px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .nav-links {
-                gap: 14px;
-                font-size: 0.8rem;
-                flex-shrink: 0;
-            }
-            .nav-right {
-                gap: 10px;
-                flex-shrink: 0;
-            }
-            .theme-toggle {
-                width: 44px;
-                height: 26px;
-            }
-            .theme-toggle .thumb {
-                width: 17px;
-                height: 17px;
-                left: 3px;
-            }
-            [data-theme="dark"] .theme-toggle .thumb {
-                transform: translateX(18px);
-            }
-            .theme-toggle svg {
-                width: 12px;
-                height: 12px;
-            }
-            .hero {
-                padding-top: 28px;
-            }
-            .hero-stats {
-                gap: 20px;
-            }
-            .project-card .project-meta {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-            }
-            .project-card .project-links {
-                justify-content: flex-start;
-            }
-            .footer {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-                padding: 20px 0;
-            }
-            .footer-socials {
-                flex-wrap: wrap;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body { padding: 0 8px; }
-            .container { padding: 0 8px; }
-            .navbar { gap: 8px; }
-            .nav-links { gap: 10px; font-size: 0.7rem; }
-            .theme-toggle { width: 40px; height: 24px; padding: 0 4px; }
-            .theme-toggle .thumb { width: 15px; height: 15px; left: 3px; }
-            [data-theme="dark"] .theme-toggle .thumb { transform: translateX(16px); }
-            .theme-toggle svg { width: 11px; height: 11px; }
-            .hero-badge { font-size: 0.55rem; padding: 3px 12px; }
-            .hero-desc { font-size: 0.9rem; }
-            .hero-location { font-size: 0.8rem; gap: 12px; }
-            .hero-stats-item .number { font-size: 1.2rem; }
-            .hero-stats-item .label { font-size: 0.65rem; }
-            .card { padding: 18px 16px 22px; }
-            .project-card { padding: 18px 16px 22px; }
-            .project-card .project-links a { font-size: 0.7rem; padding: 4px 12px; }
-            .tech-item { font-size: 0.7rem; }
-            .tech-strip-track { gap: 14px; }
-        }
-
-        @media (min-width: 1400px) {
-            .container { padding: 0 40px; }
-            .projects-grid { grid-template-columns: 1fr 1fr; }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ln (@ghostfaccee) - Backend developer.">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="ghostfaccee">
+  <meta property="og:description" content="Business card website">
+  <meta property="og:url" content="https://ghostfaccee.github.io/">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/237425619?v=4&amp;s=400">
+  <title>ghostfaccee</title>
+  <link rel="canonical" href="https://ghostfaccee.github.io/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./script.js" defer></script>
 </head>
-<body>
-    <div class="container">
-        <nav class="navbar">
-            <div class="logo">ln</div>
-            <div class="nav-right">
-                <div class="nav-links">
-                    <a href="#skills">Навыки</a>
-                    <a href="#projects">Проекты</a>
-                    <a href="#contacts">Контакты</a>
-                </div>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <svg class="sun" viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-                    <span class="thumb"></span>
-                    <svg class="moon" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10c0-5.5-4.5-10-10-10zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/><path d="M12 4a8 8 0 0 1 7 4.5 8 8 0 0 0-7-2.5 8 8 0 0 0-7 2.5A8 8 0 0 1 12 4z"/></svg>
-                </button>
-            </div>
-        </nav>
+<body id="top">
+  <a class="skip-link" href="#main">К содержанию</a>
+
+  <header class="site-header">
+    <div class="container navbar">
+      <a class="logo" href="#top" aria-label="ln, на главную">ln</a>
+      <nav class="nav-links" aria-label="Разделы сайта">
+        <a href="#skills">Навыки</a>
+        <a href="#projects">Проекты</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" type="button"
+        aria-label="Тёмная тема" aria-pressed="false" hidden>
+        <svg viewBox="0 0 24 24" class="sun" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>
+        </svg>
+        <span class="thumb"></span>
+        <svg viewBox="0 0 24 24" class="moon" aria-hidden="true">
+          <path d="M20.9 13.4A9 9 0 0 1 10.6 3.1a9 9 0 1 0 10.3 10.3Z"/>
+        </svg>
+      </button>
     </div>
+  </header>
 
-    <div class="container">
-        <section class="hero">
-            <span class="hero-badge">Backend developer</span>
-            <h1>Ghostfaccee</h1>
-            <p class="hero-desc">
-                Проектирую архитектуру, разрабатываю API и внедряю DevOps-практики. Фокусируюсь на надежности, скорости и стабильности.
-            </p>
-            <div class="hero-location">
-                <span>Красноярск, Россия</span>
-                <span class="status">
-                    <span class="dot"></span>
-                    Открыт к сотрудничеству
-                </span>
-            </div>
-            <div class="hero-stats">
-                <div class="hero-stats-item">
-                    <span class="number">1</span>
-                    <span class="label">год в бекенде</span>
-                </div>
-                <div class="hero-stats-item">
-                    <span class="number">3</span>
-                    <span class="label">проекта в open source</span>
-                </div>
-                <div class="hero-stats-item">
-                    <span class="number">Python</span>
-                    <span class="label">основной язык</span>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <div class="container">
-        <div class="tech-strip">
-            <div class="tech-strip-track" id="techTrack">
-                <span class="tech-item">Python</span>
-                <span class="tech-item">PostgreSQL</span>
-                <span class="tech-item">Redis</span>
-                <span class="tech-item">Docker</span>
-                <span class="tech-item">SQLAlchemy</span>
-                <span class="tech-item">Pytest</span>
-                <span class="tech-item">FastAPI</span>
-                <span class="tech-item">Celery</span>
-                <span class="tech-item">Git</span>
-                <span class="tech-item">Alembic</span>
-                <span class="tech-item">Linux (Debian-based & Arch-based)</span>
-
-                <span class="tech-item">Python</span>
-                <span class="tech-item">PostgreSQL</span>
-                <span class="tech-item">Redis</span>
-                <span class="tech-item">Docker</span>
-                <span class="tech-item">SQLAlchemy</span>
-                <span class="tech-item">Pytest</span>
-                <span class="tech-item">FastAPI</span>
-                <span class="tech-item">Celery</span>
-                <span class="tech-item">Git</span>
-                <span class="tech-item">Alembic</span>
-                <span class="tech-item">Linux (Debian-based & Arch-based)</span>
-            </div>
+  <main class="container" id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="hero-badge">Backend Developer</p>
+        <h1 id="hero-title">ln</h1>
+        <a class="handle" href="https://github.com/ghostfaccee">@ghostfaccee</a>
+        <p class="hero-desc">Разрабатываю серверную часть на Python: проектирую API, работаю с базами данных, пишу тесты и работаю над безопасностью.</p>
+        <p class="hero-location">Красноярск, Россия</p>
+        <div class="links">
+          <a class="button primary" href="#projects">Смотреть проекты</a>
+          <a class="button" href="https://github.com/ghostfaccee">
+            <span class="icon github" aria-hidden="true"></span>GitHub
+          </a>
         </div>
-    </div>
+      </div>
 
-    <div class="container section fade-in" id="skills">
-        <br>
-        <h2 class="section-title">Навыки и технологии</h2>
-        <p class="section-desc">Стек, с которым я ежедневно работаю.</p>
-        <div class="grid-3">
-            <div class="card">
-                <h3>Backend</h3>
-                <p>Разработка API на Python. Работа с фреймворком FastAPI. Понимание DRY, YAGNI и других принципов.</p>
-            </div>
-            <div class="card">
-                <h3>Базы данных и кеширование</h3>
-                <p>Проектирование схем, написание оптимизированных запросов. Использование Redis для кеширования и временных данных.</p>
-            </div>
-            <div class="card">
-                <h3>DevOps основы</h3>
-                <p>Контейнеризация с Docker. Настройка CI через GitHub Actions, покрытие тестами.</p>
-            </div>
+      <div class="portrait" aria-hidden="true">
+        <span>ln</span>
+        <img id="portrait" src="https://avatars.githubusercontent.com/u/237425619?v=4&amp;s=400"
+          width="208" height="208" alt="" decoding="async" fetchpriority="high">
+      </div>
+    </section>
+
+    <div class="tech-strip" role="region" aria-label="Лента технологий">
+      <div class="tech-viewport" id="tech-viewport">
+        <div class="tech-track" id="tech-track">
+          <ul class="tech-list">
+            <li>Python</li>
+            <li>PostgreSQL</li>
+            <li>Redis</li>
+            <li>Docker</li>
+            <li>SQLAlchemy</li>
+            <li>pytest</li>
+            <li>FastAPI</li>
+            <li>Celery</li>
+            <li>RabbitMQ</li>
+            <li>WebSocket</li>
+            <li>Alembic</li>
+            <li>GitHub Actions</li>
+            <li>Linux</li>
+          </ul>
         </div>
+      </div>
+      <button class="strip-toggle" id="strip-toggle" type="button" hidden
+        aria-label="Приостановить ленту технологий" aria-controls="tech-viewport">
+        <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 5v14m6-14v14"/>
+        </svg>
+        <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m9 5 11 7-11 7Z"/>
+        </svg>
+      </button>
     </div>
 
-    <div class="container section fade-in" id="projects">
-        <br>
-        <h2 class="section-title">Проекты</h2>
-        <p class="section-desc">Мои учебные и pet-проекты.</p>
-        <div class="projects-grid">
-            <div class="project-card">
-                <div class="project-name">Fluffy (в разработке)</div>
-                <div class="project-desc">
-                    API для социальной сети.
-                </div>
-                <div class="project-meta">
-                    <div class="project-links">
-                        <a href="https://github.com/ghostfaccee/fluffy" target="_blank">GitHub</a>
-                        <a href="https://gitflic.ru/project/ghostfaccee/fluffy" target="_blank">GitFlic</a>
-                        <a href="https://ghostfaccee.github.io/Fluffy/" target="_blank">Сайт-визитка проекта</a>
-                    </div>
-                </div>
-            </div>
-            <div class="project-card">
-                <div class="project-name">Prism</div>
-                <div class="project-desc">
-                    Агрегатор событий для разработчиков. Собирает данные с сервисов, которыми программисты пользуются ежедневно и предоставляет их через единый API. Интеграция с GitHub OAuth и 150+ тестов.
-                </div>
-                <div class="project-meta">
-                    <div class="project-links">
-                        <a href="https://github.com/ghostfaccee/Prism" target="_blank">GitHub</a>
-                        <a href="https://gitflic.ru/project/ghostfaccee/prism" target="_blank">GitFlic</a>
-                        <a href="https://ghostfaccee.github.io/Prism/" target="_blank">Сайт-визитка проекта</a>
-                    </div>
-                </div>
-            </div>
-            <div class="project-card">
-                <div class="project-name">TrackIt-API</div>
-                <div class="project-desc">
-                    API для отслеживания привычек с статистикой прогресса и стриками.
-                </div>
-                <div class="project-meta">
-                    <div class="project-links">
-                        <a href="https://github.com/ghostfaccee/TrackIt-API" target="_blank">GitHub</a>
-                        <a href="https://gitflic.ru/project/ghostfaccee/trackit-api" target="_blank">GitFlic</a>
-                    </div>
-                </div>
-            </div>
-            <div class="project-card">
-                <div class="project-name">CodeHub</div>
-                <div class="project-desc">
-                    Веб-приложение для отслеживания и выполнения целей с элементами геймификации.
-                </div>
-                <div class="project-meta">
-                    <div class="project-links">
-                        <a href="https://github.com/ghostfaccee/CodeHub" target="_blank">GitHub</a>
-                        <a href="https://gitflic.ru/project/ghostfaccee/codehub" target="_blank">GitFlic</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
+    <section class="section" id="skills" aria-labelledby="skills-title" data-reveal>
+      <h2 id="skills-title">Навыки и технологии</h2>
+      <p class="section-desc">Стек, с которым я работаю.</p>
+      <div class="skills-grid">
+        <article class="card">
+          <h3>Backend</h3>
+          <p>Разработка REST API и WebSocket на Python. Использую множество инструментов для каждой задачи.</p>
+        </article>
+        <article class="card">
+          <h3>Базы данных и хранилища</h3>
+          <p>Работаю с Postgres и Redis, также владею SQLite. Использую SQLAlchemy как ORM. Также умею работать с S3-совместимыми хранилищами.</p>
+        </article>
+        <article class="card">
+          <h3>Тесты и инфраструктура</h3>
+          <p>Умею писать тесты, настраивать автоматические проверки в GitHub Actions. Использую Docker для запуска сервисов.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="projects" aria-labelledby="projects-title" data-reveal>
+      <h2 id="projects-title">Проекты</h2>
+      <p class="section-desc">Мои учебные и pet-проекты, а также хакатоны.</p>
+
+      <div class="project-tools" id="project-tools" hidden>
+        <label>Поиск
+          <input id="project-query" type="search" placeholder="Проект или технология" aria-controls="project-list">
+        </label>
+        <label>Категория
+          <select id="project-filter" aria-controls="project-list">
+            <option value="all">Все проекты</option>
+            <option value="api">Backend / API</option>
+            <option value="web">Веб-приложения</option>
+            <option value="hackathon">Хакатон</option>
+          </select>
+        </label>
+        <label>Порядок
+          <select id="project-sort" aria-controls="project-list">
+            <option value="default">Как в портфолио</option>
+            <option value="asc">По имени: A–Z</option>
+            <option value="desc">По имени: Z–A</option>
+          </select>
+        </label>
+      </div>
+
+      <p id="project-count" class="project-count" role="status"></p>
+      <p class="empty" id="project-empty" hidden>Ничего не найдено. Попробуй другой запрос или категорию.</p>
+
+      <div class="projects-grid" id="project-list">
+        <article class="card project-card" data-category="api web">
+          <h3>Fluffy</h3>
+          <p>Pet-проект. Социальная сеть с REST API и WebSocket. На данный момент работаю именно над ним.</p>
+          <ul class="tags" aria-label="Технологии">
+            <li>Python</li><li>Vue</li><li>WebSocket</li><li>RabbitMQ</li><li>Docker Compose</li>
+          </ul>
+          <div class="links project-links">
+            <a class="button" href="https://github.com/ghostfaccee/fluffy" aria-label="Fluffy на GitHub"><span class="icon github" aria-hidden="true"></span>GitHub</a>
+            <a class="button" href="https://gitflic.ru/project/ghostfaccee/fluffy" aria-label="Fluffy на GitFlic"><span class="icon gitflic" aria-hidden="true"></span>GitFlic</a>
+            <a class="button" href="https://ghostfaccee.github.io/Fluffy/">Сайт-визитка</a>
+          </div>
+        </article>
+
+        <article class="card project-card" data-category="api">
+          <h3>Prism</h3>
+          <p>Учебный проект. Агрегатор событий для разработчиков: собирает данные из внешних сервисов и отдает через единый API. Имеется вход через GitHub OAuth.</p>
+          <ul class="tags" aria-label="Технологии">
+            <li>Python</li><li>FastAPI</li><li>PostgreSQL</li><li>Redis</li><li>Docker</li>
+          </ul>
+          <div class="links project-links">
+            <a class="button" href="https://github.com/ghostfaccee/Prism" aria-label="Prism на GitHub"><span class="icon github" aria-hidden="true"></span>GitHub</a>
+            <a class="button" href="https://gitflic.ru/project/ghostfaccee/prism" aria-label="Prism на GitFlic"><span class="icon gitflic" aria-hidden="true"></span>GitFlic</a>
+            <a class="button" href="https://ghostfaccee.github.io/Prism/">Сайт Prism</a>
+          </div>
+        </article>
+
+        <article class="card project-card" data-category="api">
+          <h3>TrackIt API</h3>
+          <p>Учебный проект. API для отслеживания привычек: отметки выполнения, серии без пропусков и статистика прогресса.</p>
+          <ul class="tags" aria-label="Технологии">
+            <li>FastAPI</li><li>PostgreSQL</li><li>Redis</li><li>Alembic</li><li>pytest</li>
+          </ul>
+          <div class="links project-links">
+            <a class="button" href="https://github.com/ghostfaccee/TrackIt-API" aria-label="TrackIt API на GitHub"><span class="icon github" aria-hidden="true"></span>GitHub</a>
+            <a class="button" href="https://gitflic.ru/project/ghostfaccee/trackit-api" aria-label="TrackIt API на GitFlic"><span class="icon gitflic" aria-hidden="true"></span>GitFlic</a>
+          </div>
+        </article>
+
+        <article class="card project-card" data-category="web">
+          <h3>CodeHub</h3>
+          <p>Учебный проект. Веб-приложение на Django для отслеживания целей и выполненных задач с элементами геймификации.</p>
+          <ul class="tags" aria-label="Технологии">
+            <li>Python</li><li>Django</li><li>SQLite</li><li>Docker</li>
+          </ul>
+          <div class="links project-links">
+            <a class="button" href="https://github.com/ghostfaccee/CodeHub" aria-label="CodeHub на GitHub"><span class="icon github" aria-hidden="true"></span>GitHub</a>
+            <a class="button" href="https://gitflic.ru/project/ghostfaccee/codehub" aria-label="CodeHub на GitFlic"><span class="icon gitflic" aria-hidden="true"></span>GitFlic</a>
+          </div>
+        </article>
+
+        <article class="card project-card" data-category="api hackathon">
+          <h3>UniHub</h3>
+          <p>Проект на FastAPI, сделанный для выполнения одного из заданий хакатона.</p>
+          <ul class="tags" aria-label="Технологии">
+            <li>Python</li><li>FastAPI</li><li>React</li><li>Docker</li>
+          </ul>
+          <div class="links project-links">
+            <a class="button" href="https://github.com/ghostfaccee/UniHub" aria-label="UniHub на GitHub"><span class="icon github" aria-hidden="true"></span>GitHub</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <details class="ping" id="ping" hidden>
+      <summary>Ping <span>мини-игра на реакцию</span></summary>
+      <div class="ping-body">
+        <p class="muted">Запусти раунд, дождись сигнала "Жми!" и нажми кнопку ещё раз. Работают клик, тап и клавиатура.</p>
+        <button class="button ping-button" id="ping-button" type="button">Начать</button>
+        <p class="muted" id="ping-status" role="status"></p>
+        <p class="muted" id="ping-best"></p>
+      </div>
+    </details>
+  </main>
+
+  <footer class="container" id="contacts">
+    <div class="footer">
+      <a class="logo" href="#top" aria-label="ln, наверх">ln</a>
+      <nav class="links footer-socials" aria-label="Контакты и профили">
+        <a href="https://github.com/ghostfaccee"><span class="icon github" aria-hidden="true"></span>GitHub</a>
+        <a href="https://gitflic.ru/user/ghostfaccee"><span class="icon gitflic" aria-hidden="true"></span>GitFlic</a>
+        <a href="https://leetcode.com/u/ghostfaccee/"><span class="icon leetcode" aria-hidden="true"></span>LeetCode</a>
+        <a id="email" href="mailto:ghostface.host@gmail.com">Почта</a>
+        <button class="button small" id="copy-email" type="button" hidden>Копировать адрес</button>
+      </nav>
+      <p class="copy-status" id="copy-status" role="status"></p>
     </div>
-
-    <div class="container">
-        <footer class="footer" id="contacts">
-            <span>2026 | ghostfaccee · Made with ❤</span>
-            <div class="footer-socials">
-                <a href="https://github.com/ghostfaccee" target="_blank">GitHub</a>
-                <a href="https://gitflic.ru/user/ghostfaccee" target="_blank">GitFlic</a>
-                <a href="https://leetcode.com/u/ghostfaccee/" target="_blank">LeetCode</a>
-                <a href="mailto:ghostface.host@gmail.com" target="_blank">Email</a>
-            </div>
-        </footer>
-    </div>
-
-    <script>
-        const toggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        const saved = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', saved);
-
-        toggle.addEventListener('click', () => {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-        const track = document.getElementById('techTrack');
-        const setSpeed = () => {
-            let speed = 42;
-            if (window.innerWidth < 480) speed = 55;
-            else if (window.innerWidth < 768) speed = 48;
-            else if (window.innerWidth < 1024) speed = 44;
-            track.style.animationDuration = speed + 's';
-        };
-        setSpeed();
-        window.addEventListener('resize', setSpeed);
-    </script>
+  </footer>
 </body>
 </html>
